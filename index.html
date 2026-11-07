@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+ <title>Inicio · Dapta</title>
+ <meta name="robots" content="noindex, nofollow">
+ <!-- blindem partials/theme-script: saved theme, else the system preference, before first paint. -->
+ <script>
+ (() => {
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (error) {}
+  const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+ })();
+ </script>
+ <!-- blindem layouts/app: saved sidebar width and collapsed state, before first paint. -->
+ <script>
+ (() => {
+  const root = document.documentElement;
+  try {
+   const width = parseInt(localStorage.getItem('sidebar-width'), 10);
+   if (width >= 220 && width <= 400) root.style.setProperty('--sidebar-w', width + 'px');
+   if (localStorage.getItem('sidebar-collapsed') === '1') root.classList.add('sidebar-collapsed');
+  } catch (error) {}
+ })();
+ </script>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=SN+Pro:wght@500;600&display=swap">
+ <!-- Design system: blindem's stylesheet, unchanged. dapta.css only adds the pieces this screen needs, from its tokens. -->
+ <link rel="stylesheet" href="/css/app.css">
+ <link rel="stylesheet" href="/css/dapta.css">
+ <script defer src="/js/app.js"></script>
+ <script defer src="/js/ui.js"></script>
+ <script defer src="/js/controls.js"></script>
+ <script defer src="/js/ai.js"></script>
+ <script defer src="/js/nav.js"></script>
+ <script defer src="/js/command.js"></script>
+ <script defer src="/js/dapta.js"></script>
+ <script type="module" src="/js/sounds.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Ir al contenido</a>
+<div class="app-shell">
+ <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+  <div class="sidebar-head">
+   <a href="#" class="workspace-name dapta-brand" aria-label="Dapta · Inicio"><svg class="dapta-wordmark" aria-hidden="true" focusable="false" viewBox="0 0 1600 513"><use href="/icons/hugeicons.svg#dapta-wordmark"/></svg><svg class="dapta-iso" aria-hidden="true" focusable="false" viewBox="0 0 568 580"><use href="/icons/hugeicons.svg#dapta-iso"/></svg></a>
+   <button id="sidebar-collapse" class="sidebar-collapse" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Contraer menú" title="Contraer menú" aria-keyshortcuts="Meta+B Control+B"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#sidebar-left"/></svg></button>
+  </div>
+
+  <div class="nav-caption">Espacio de trabajo</div>
+  <div class="workspace-switch">
+   <label class="sr-only" for="workspace">Cambiar espacio de trabajo</label>
+   <select id="workspace" name="workspace">
+    <option value="asad" selected>asad</option>
+    <option value="blindem">Blindem</option>
+    <option value="nuevo">Crear espacio…</option>
+   </select>
+  </div>
+
+  <nav class="nav-links" aria-label="Plataforma">
+   <a class="nav-link active" aria-current="page" href="#"><span class="nav-indicator" aria-hidden="true"></span><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#house"/></svg> <span class="nav-label">Inicio</span></a>
+   <a class="nav-link" href="#dapti"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#ai-chat"/></svg> <span class="nav-label">Dapti</span><span class="pill nav-pill">Asistente IA</span></a>
+   <a class="nav-link" href="#notetaker"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#note-edit"/></svg> <span class="nav-label">AI Notetaker</span></a>
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#phone"/></svg> <span class="nav-label">Agentes de voz</span><span class="nav-counter">1</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#agentes-voz"><span class="nav-label">Mis agentes</span></a>
+     <a class="nav-link" href="#numeros"><span class="nav-label">Números telefónicos</span></a>
+     <a class="nav-link" href="#llamadas"><span class="nav-label">Historial de llamadas</span></a>
+    </div>
+   </details>
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#bot"/></svg> <span class="nav-label">Agentes de texto</span><span class="nav-counter">1</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#agentes-texto"><span class="nav-label">Mis agentes</span></a>
+     <a class="nav-link" href="#canales"><span class="nav-label">Canales</span></a>
+     <a class="nav-link" href="#conversaciones"><span class="nav-label">Conversaciones</span></a>
+    </div>
+   </details>
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#megaphone"/></svg> <span class="nav-label">Secuencias</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#campanas"><span class="nav-label">Campañas</span></a>
+     <a class="nav-link" href="#plantillas"><span class="nav-label">Plantillas</span></a>
+    </div>
+   </details>
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#contacts"/></svg> <span class="nav-label">CRM</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#contactos"><span class="nav-label">Contactos</span></a>
+     <a class="nav-link" href="#empresas"><span class="nav-label">Empresas</span></a>
+     <a class="nav-link" href="#oportunidades"><span class="nav-label">Oportunidades</span></a>
+    </div>
+   </details>
+   <a class="nav-link" href="#flow-studio"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#workflow"/></svg> <span class="nav-label">Flow Studio</span></a>
+   <a class="nav-link" href="#dcal"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#calendar-add"/></svg> <span class="nav-label">dCal</span><span class="pill nav-pill is-new">Nuevo</span></a>
+   <a class="nav-link" href="#dforms"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#form"/></svg> <span class="nav-label">dForms</span><span class="pill nav-pill is-new">Nuevo</span></a>
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#database"/></svg> <span class="nav-label">Data Studio</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#tablas"><span class="nav-label">Tablas</span></a>
+     <a class="nav-link" href="#importaciones"><span class="nav-label">Importaciones</span></a>
+    </div>
+   </details>
+  </nav>
+
+  <div class="nav-caption nav-caption-second">Recursos</div>
+  <nav class="nav-links" aria-label="Recursos">
+   <details class="nav-group">
+    <summary class="nav-link"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#help"/></svg> <span class="nav-label">Centro de ayuda</span><svg aria-hidden="true" class="icon nav-chevron" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-down"/></svg></summary>
+    <div class="nav-sub">
+     <a class="nav-link" href="#documentacion"><span class="nav-label">Documentación</span></a>
+     <a class="nav-link" href="#academy"><span class="nav-label">Dapta Academy</span></a>
+     <a class="nav-link" href="#soporte"><span class="nav-label">Soporte</span></a>
+    </div>
+   </details>
+   <a class="nav-link" href="#conecta"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#plug"/></svg> <span class="nav-label">Conecta tu IA</span></a>
+  </nav>
+
+  <div class="sidebar-bottom account">
+   <div class="plan-meter" aria-label="Créditos del plan">
+    <div class="plan-meter-head"><span>Créditos usados</span><b class="mono">0 / 254</b></div>
+    <div class="dash-split" aria-hidden="true"><i class="is-active" style="flex-grow:0.001"></i><i style="flex-grow:254"></i></div>
+   </div>
+   <button id="account-trigger" class="account-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="account-panel"><span class="avatar gradient" style="--av-base:hsl(233 80% 88%);--av-mid:hsl(253 92% 66%);--av-hot:hsl(208 88% 56%);--av-x:62%;--av-y:68%" aria-hidden="true"></span><span class="account-text"><b>Manuel Elustondo</b><small>Plan gratuito</small></span><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#unfold"/></svg></button>
+   <div id="account-panel" class="account-panel t-dropdown" role="group" aria-label="Cuenta y preferencias">
+    <div class="account-head"><b>Manuel Elustondo</b><small>elustondo129@gmail.com</small></div>
+    <a class="nav-link" href="#plan"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#rocket"/></svg> Mejorar plan</a>
+    <a class="nav-link" href="#perfil"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#user"/></svg> Perfil y seguridad</a>
+    <button id="theme-toggle" class="nav-link theme-toggle" type="button" aria-pressed="false"><span class="t-icon-swap" data-state="a"><svg aria-hidden="true" class="icon t-icon" data-icon="a" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#sun"/></svg><svg aria-hidden="true" class="icon t-icon" data-icon="b" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#moon"/></svg></span>Modo oscuro<span class="theme-switch" aria-hidden="true"></span></button>
+    <button id="sound-toggle" class="nav-link theme-toggle" type="button" aria-pressed="true"><span class="t-icon-swap" data-state="a"><svg aria-hidden="true" class="icon t-icon" data-icon="a" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#volume"/></svg><svg aria-hidden="true" class="icon t-icon" data-icon="b" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#volume-off"/></svg></span>Sonido<span class="theme-switch" aria-hidden="true"></span></button>
+    <a class="nav-link logout" href="#salir"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#log-out"/></svg> Cerrar sesión</a>
+   </div>
+  </div>
+ </aside>
+ <div id="sidebar-resizer" class="sidebar-resizer" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="sidebar" aria-label="Ancho del menú" aria-valuemin="220" aria-valuemax="400" aria-valuenow="264" title="Arrastra para ajustar · doble clic para restablecer"></div>
+ <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Cerrar menú" hidden></button>
+
+ <div class="main-area">
+  <header class="topbar"><div class="topbar-inner">
+   <div class="top-left">
+    <button id="mobile-menu" class="icon-button mobile-only" type="button" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#menu"/></svg></button>
+    <nav class="breadcrumb" aria-label="Ubicación"><a class="crumb-home" href="#" aria-label="Inicio"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#house"/></svg></a><span class="crumb-sep" aria-hidden="true">/</span><strong aria-current="page">Inicio</strong></nav>
+   </div>
+   <div class="top-actions">
+    <button type="button" class="command-trigger" data-command-open aria-haspopup="dialog" aria-controls="command" aria-keyshortcuts="Meta+K Control+K"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#search"/></svg><span>Buscar o ir a…</span><span class="command-trigger-keys" aria-hidden="true"><kbd data-mod>⌘</kbd><kbd>K</kbd></span></button>
+    <span class="top-date"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#calendar-days"/></svg> <span data-today="long"></span></span>
+    <div class="notif">
+     <button id="notif-trigger" class="icon-button notif-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="notif-panel" data-count="2" aria-label="Notificaciones"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#bell"/></svg><span class="notif-badge">2</span></button>
+     <section id="notif-panel" class="notif-panel t-dropdown" role="dialog" aria-label="Notificaciones" data-url="/data/notifications.json" hidden>
+      <header class="notif-head"><h2>Notificaciones</h2><button type="button" class="notif-read-all" data-notif-read-all data-url="/notificaciones/leer"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#check-check"/></svg> Marcar todo leído</button></header>
+      <div class="notif-tabs" role="tablist" aria-label="Filtrar notificaciones"><button type="button" role="tab" data-notif-filter="all" aria-selected="true">Todas</button><button type="button" role="tab" data-notif-filter="unread" aria-selected="false">Sin leer</button><button type="button" role="tab" data-notif-filter="alert" aria-selected="false">Pendientes</button></div>
+      <ul class="notif-list" aria-live="polite"></ul>
+     </section>
+    </div>
+   </div>
+  </div></header>
+
+  <div class="main-scroll" id="main-scroll">
+  <main class="page-content home" id="main-content" tabindex="-1">
+
+   <!-- The home is the conversation with Dapti: greeting, one large composer, quick starts. -->
+   <section class="home-hero" id="dapti" aria-labelledby="home-title">
+    <h1 id="home-title">Hola Manuel, ¿cómo te ayudo?</h1>
+
+    <div class="home-thread ai-output dapti-output" aria-live="polite"></div>
+
+    <div class="composer-stage" data-dapti-stage>
+     <!-- Dapti around the chat: dapta.js rotates the poses (top, right, left, waving) that fit the space. -->
+     <img class="dapti-pose" data-pose="top" src="/img/dapti-peek-top.webp" alt="" aria-hidden="true" width="260" height="262" decoding="async">
+     <img class="dapti-pose" data-pose="right" src="/img/dapti-peek-right.webp" alt="" aria-hidden="true" width="300" height="417" decoding="async">
+     <img class="dapti-pose" data-pose="left" src="/img/dapti-peek-left.webp" alt="" aria-hidden="true" width="300" height="438" decoding="async">
+     <img class="dapti-pose" data-pose="wave" src="/img/dapti-wave-right.webp" alt="" aria-hidden="true" width="340" height="420" decoding="async">
+    <form class="composer composer-xl" data-dapti-form novalidate>
+     <label class="sr-only" for="dapti-input">Pregunta lo que quieras</label>
+     <textarea id="dapti-input" rows="3" maxlength="4000" placeholder="Pregunta lo que quieras… Escribe @ para hacer referencia"></textarea>
+     <div class="composer-bar">
+      <div class="composer-model">
+       <label class="sr-only" for="dapti-model">Modelo</label>
+       <select id="dapti-model" name="model">
+        <option value="Lite" selected>Lite</option>
+        <option value="Pro">Pro</option>
+       </select>
+      </div>
+      <button type="button" class="icon-button" aria-label="Adjuntar archivo"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#paperclip"/></svg></button>
+      <span class="composer-hint"><kbd>↵</kbd> enviar · <kbd>⇧</kbd><kbd>↵</kbd> nueva línea</span>
+      <button type="button" class="icon-button" aria-label="Dictar por voz"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#mic"/></svg></button>
+      <button class="ai-send" type="submit" aria-label="Enviar" disabled><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#send-plane"/></svg></button>
+     </div>
+    </form>
+    </div>
+
+    <div class="guided-chips home-chips" role="group" aria-label="Acciones rápidas">
+     <button type="button" class="ai-chip" data-prompt="Quiero crear un agente de voz que "><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#mic"/></svg>Crear agente de voz</button>
+     <button type="button" class="ai-chip" data-prompt="Quiero crear un agente de texto que "><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#message"/></svg>Crear agente de texto</button>
+     <button type="button" class="ai-chip" data-prompt="Quiero automatizar un flujo que "><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#workflow"/></svg>Crear un flujo</button>
+     <button type="button" class="ai-chip" data-prompt="Resume mi última reunión con "><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#note-edit"/></svg>AI Notetaker</button>
+    </div>
+
+    <a class="tool-link" href="#conecta">
+     <span class="tool-stack" aria-hidden="true"><img src="/logos/google-sheets.svg" alt=""><img src="/logos/gmail.svg" alt=""><img src="/logos/whatsapp-icon.svg" alt=""><img src="/logos/microsoft-outlook.svg" alt=""><img src="/logos/google-calendar.svg" alt=""><img src="/logos/salesforce.svg" alt=""></span>
+     Conecta tus herramientas a Dapta
+     <svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#arrow-right"/></svg>
+    </a>
+   </section>
+
+   <section class="home-recent" aria-labelledby="recent-title">
+    <h2 id="recent-title">Continúa donde lo dejaste</h2>
+    <ul>
+     <li><a href="#dapti"><span class="home-recent-icon" aria-hidden="true"><svg class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#message"/></svg></span><span class="home-recent-text"><b>Quiero crear un nuevo agente de voz para mi empresa</b><small>Conversación con Dapti</small></span><time class="mono" datetime="2026-08-29">29/08/2026</time></a></li>
+     <li><a href="#agentes-voz"><span class="home-recent-icon" aria-hidden="true"><svg class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#phone"/></svg></span><span class="home-recent-text"><b>Carla</b><small>Agente de voz · <span class="status active"><i aria-hidden="true"></i>Activo</span></small></span><time class="mono" datetime="2026-10-27">27/10/2026</time></a></li>
+    </ul>
+   </section>
+
+   <section class="academy" id="academy" aria-labelledby="academy-title">
+    <div class="section-head">
+     <div><h2 id="academy-title">Dapta Academy</h2><p data-academy-copy="subtitle">Aprende con cursos prácticos y consejos de expertos: elige un tema y comienza.</p></div>
+     <div class="segmented academy-lang" role="radiogroup" aria-label="Idioma de los cursos">
+      <label><input type="radio" name="academy-lang" value="en"><span>English</span></label>
+      <label><input type="radio" name="academy-lang" value="es" checked><span>Español</span></label>
+     </div>
+    </div>
+    <div class="academy-toolbar">
+     <div class="guided-chips academy-filters" role="group" aria-label="Filtrar cursos" data-academy-filters></div>
+     <a class="academy-all" href="#academy"><span data-academy-copy="all">Ver todo</span> <svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#arrow-right"/></svg></a>
+    </div>
+    <div class="academy-rail">
+     <button type="button" class="icon-button academy-nav" data-academy-scroll="-1" aria-label="Cursos anteriores" hidden><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-left"/></svg></button>
+     <ul class="academy-row" data-academy-row aria-live="polite"></ul>
+     <button type="button" class="icon-button academy-nav" data-academy-scroll="1" aria-label="Más cursos" hidden><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#chevron-right"/></svg></button>
+    </div>
+   </section>
+
+  </main>
+  <footer class="app-footer"><span>Dapta · Agentes de IA</span><span>Rediseño con el sistema de diseño de blindem</span></footer>
+  </div>
+ </div>
+</div>
+
+<!-- blindem partials/command: the palette (⌘K). command.js reads the commands below; records come from GET /buscar. -->
+<dialog class="command t-modal" id="command" aria-labelledby="command-title" data-search-url="/buscar">
+ <h2 class="sr-only" id="command-title">Buscar o ir a</h2>
+ <div class="command-search">
+  <svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="/icons/hugeicons.svg#search"/></svg>
+  <input type="text" role="combobox" aria-expanded="true" aria-controls="command-list" aria-autocomplete="list" aria-label="Busca agentes, conversaciones o escribe un comando" placeholder="Busca agentes, conversaciones o escribe un comando…" autocomplete="off" spellcheck="false" maxlength="80">
+  <kbd class="command-esc">Esc</kbd>
+ </div>
+ <div class="command-list" id="command-list" role="listbox" aria-label="Resultados"></div>
+ <div class="command-help" hidden>
+  <h3>Atajos de teclado</h3>
+  <dl>
+   <div><dt><kbd data-mod>⌘</kbd><kbd>K</kbd></dt><dd>Buscar o ir a cualquier parte</dd></div>
+   <div><dt><kbd data-mod>⌘</kbd><kbd>B</kbd></dt><dd>Contraer o expandir el menú</dd></div>
+   <div><dt><kbd>G</kbd> <kbd>I</kbd> · <kbd>V</kbd> · <kbd>T</kbd> · <kbd>F</kbd></dt><dd>Ir a Inicio, Agentes de voz, Agentes de texto o Flow Studio</dd></div>
+   <div><dt><kbd>N</kbd> <kbd>V</kbd> · <kbd>T</kbd> · <kbd>F</kbd></dt><dd>Nuevo agente de voz, de texto o flujo</dd></div>
+   <div><dt><kbd>Esc</kbd></dt><dd>Cerrar el panel o diálogo abierto</dd></div>
+   <div><dt><kbd>?</kbd></dt><dd>Mostrar esta ayuda</dd></div>
+  </dl>
+ </div>
+ <footer class="command-foot" aria-hidden="true">
+  <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span class="command-foot-end"><kbd>?</kbd> atajos</span>
+ </footer>
+ <script type="application/json" data-commands>[
+  {"group":"Ir a","title":"Inicio","href":"#","icon":"house","keys":"G I","words":"resumen dashboard home"},
+  {"group":"Ir a","title":"Dapti","detail":"Asistente IA","href":"#dapti","icon":"ai-chat","words":"chat asistente preguntar"},
+  {"group":"Ir a","title":"AI Notetaker","href":"#notetaker","icon":"note-edit","words":"reuniones notas resumen"},
+  {"group":"Ir a","title":"Agentes de voz","href":"#agentes-voz","icon":"phone","keys":"G V","words":"llamadas telefono carla"},
+  {"group":"Ir a","title":"Agentes de texto","href":"#agentes-texto","icon":"bot","keys":"G T","words":"whatsapp chat mensajes"},
+  {"group":"Ir a","title":"Secuencias","href":"#campanas","icon":"megaphone","words":"campañas outbound"},
+  {"group":"Ir a","title":"CRM","href":"#contactos","icon":"contacts","words":"contactos empresas oportunidades"},
+  {"group":"Ir a","title":"Flow Studio","href":"#flow-studio","icon":"workflow","keys":"G F","words":"flujos automatizaciones"},
+  {"group":"Ir a","title":"dCal","href":"#dcal","icon":"calendar-add","words":"calendario citas agenda"},
+  {"group":"Ir a","title":"dForms","href":"#dforms","icon":"form","words":"formularios encuestas"},
+  {"group":"Ir a","title":"Data Studio","href":"#tablas","icon":"database","words":"datos tablas importar"},
+  {"group":"Ir a","title":"Dapta Academy","detail":"Centro de ayuda","href":"#academy","icon":"graduation","words":"cursos videos aprender"},
+  {"group":"Crear","title":"Nuevo agente de voz","detail":"Con Dapti","href":"#dapti","icon":"plus","keys":"N V","words":"crear agente llamadas"},
+  {"group":"Crear","title":"Nuevo agente de texto","detail":"Con Dapti","href":"#dapti","icon":"plus","keys":"N T","words":"crear agente whatsapp"},
+  {"group":"Crear","title":"Nuevo flujo","detail":"Flow Studio","href":"#flow-studio","icon":"plus","keys":"N F","words":"crear automatizar"},
+  {"group":"Acciones","title":"Cambiar tema claro / oscuro","action":"theme","icon":"moon","words":"modo oscuro claro apariencia"},
+  {"group":"Acciones","title":"Activar o silenciar sonidos","action":"sound","icon":"volume","words":"audio silencio"},
+  {"group":"Acciones","title":"Ver atajos de teclado","action":"shortcuts","icon":"info","keys":"?","words":"teclas ayuda accesibilidad"}
+ ]</script>
+</dialog>
+</body>
+</html>

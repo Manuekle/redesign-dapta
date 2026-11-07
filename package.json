@@ -1,0 +1,16 @@
+{
+  "name": "redesign-dapta",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "icons": "node scripts/build-icons.mjs",
+    "dev": "vite",
+    "build": "node scripts/build-icons.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@hugeicons/core-free-icons": "^4.4.0",
+    "vite": "^8.3.6"
+  }
+}

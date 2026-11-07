@@ -1,0 +1,194 @@
+/* Dapta screens on blindem's design system.
+   css/app.css is blindem's stylesheet, unchanged; this file only adds what the Dapta home needs that blindem has no
+   component for (brand, workspace switch, nav pills, the Dapti composer and thread, Academy rail). Everything is
+   built from app.css tokens (--surface*, --fg*, --line*, --accent-*, --radius-*, --space-*, motion), so both
+   themes work. The home is deliberately sparse: the conversation is the page. */
+
+/* ── Brand ───────────────────────────────────────────────────────────────── */
+.dapta-brand { color: var(--fg); }
+.dapta-brand svg { fill: initial; stroke: none; }
+.dapta-wordmark { width: 92px; height: 30px; }
+.dapta-iso { display: none; width: 26px; height: 27px; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.workspace-switch { margin: 0 0 var(--space-4); }
+.workspace-switch .custom-select, .workspace-switch select { width: 100%; }
+.nav-pill { margin-left: auto; min-height: 18px; padding: 0 6px; font-size: 10.5px; color: var(--on-accent); background: var(--accent-fill); }
+.nav-pill.is-new { color: var(--fg-2); background: var(--surface-3); }
+.nav-link:has(.nav-pill) .nav-counter { margin-left: 0; }
+
+.plan-meter { display: grid; gap: var(--space-tight); margin: 0 0 var(--space-3); padding: var(--space-3) 14px; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--raised); box-shadow: var(--shadow-card); }
+.plan-meter-head { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); }
+.plan-meter-head b { color: var(--fg); font-weight: 500; }
+.plan-meter .dash-split { height: 6px; }
+
+@media (min-width: 1024px) {
+  :root.sidebar-collapsed .sidebar :is(.workspace-switch, .nav-pill, .plan-meter, .dapta-wordmark) { display: none; }
+  :root.sidebar-collapsed .dapta-iso { display: block; }
+}
+
+/* ── Home: the conversation is the page ──────────────────────────────────── */
+.page-content.home { --home-w: 880px; display: flex; flex-direction: column; gap: var(--space-12); overflow-x: clip; /* Dapti's side poses never widen the page */ }
+
+.home-hero { width: 100%; max-width: var(--home-w); margin: 0 auto; min-height: calc(100dvh - 52px - 180px); display: flex; flex-direction: column; justify-content: center; gap: var(--space-5); padding-top: var(--space-8); }
+.home-hero h1 { margin: 0 0 var(--space-3); text-align: center; font-family: var(--font-title); font-size: clamp(30px, 3.8vw, 48px); line-height: 1.1; font-weight: 600; letter-spacing: var(--title-tracking-tight); }
+
+/* The composer: blindem's field (fill, inset, lime focus halo) at the size of the page's main act. */
+.composer { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-3) 6px var(--space-4); border: 1px solid var(--field-edge); border-radius: var(--radius-textarea); box-shadow: var(--field-inset); background: var(--field); transition: background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+.composer:hover { border-color: var(--field-edge-hover); }
+.composer:focus-within { background: var(--raised); border-color: var(--accent-line); box-shadow: var(--field-focus-shadow); }
+.composer textarea { width: 100%; padding: 0; border: 0; outline: 0; resize: none; background: transparent; color: var(--fg); font: inherit; field-sizing: content; }
+.composer textarea::placeholder { color: var(--fg-disabled); }
+.composer-bar { display: flex; align-items: center; gap: var(--space-1); }
+.composer-model { width: 104px; }
+.composer-model .custom-select, .composer-model select { width: 100%; }
+.composer-hint { margin-left: auto; padding-right: var(--space-2); color: var(--fg-3); font-size: var(--text-small); white-space: nowrap; opacity: 0; transition: opacity var(--duration-fast) var(--ease-smooth-out); }
+.composer:focus-within .composer-hint { opacity: 1; }
+.composer-hint kbd { font-family: var(--mono); font-size: 11px; }
+.composer .icon-button { border-color: transparent; background: transparent; }
+.composer .icon-button:hover { background: var(--surface-2); }
+
+.composer-xl { padding: 22px var(--space-4) var(--space-3) var(--space-6); border-radius: var(--radius-sheet); background: var(--raised); box-shadow: var(--field-inset), 0 1px 2px rgb(var(--shadow-ink) / .08), 0 24px 56px -28px rgb(var(--shadow-ink) / .45); }
+.composer-xl:focus-within { box-shadow: var(--field-focus-shadow), 0 24px 56px -28px rgb(var(--shadow-ink) / .45); }
+.composer-xl textarea { min-height: 104px; max-height: 360px; font-size: 17px; line-height: 26px; }
+/* Send matches the icon buttons beside it: 32 px (36 px on phones, like blindem's .icon-button). */
+.composer-xl .ai-send { width: 32px; height: 32px; }
+.composer-xl .ai-send:disabled { opacity: .35; }
+
+.guided-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* Dapti around the chat. Four poses take turns (dapta.js, one per hour): over the top edge with both paws on it, out
+   of the right edge, out of the left edge, and waving from the right. Each artwork is cut straight where the chat
+   hides it; that cut is lined up with the composer's edge.
+   Sizes are set so the head reads the same (~100 px) in every pose.
+   Coming out from behind the chat: Dapti slides out from the edge while a clip-path hides whatever is still on the
+   chat's side of that edge. Both move with the same duration and curve, so the clip line stays glued to the edge
+   (it starts exactly on it and opens past it as Dapti finishes, revealing the paws/hand that grip the border).
+   Dapti then rests in front of the composer, inside the stage's own stacking context (isolation), so it never rises
+   over the top bar, menus or dialogs; the model menu's list is mounted in <body> and always opens above it. */
+.composer-stage { position: relative; isolation: isolate; margin-top: 96px; }
+.composer-stage .composer { position: relative; z-index: 1; }
+.dapti-pose { --cut: 0%; position: absolute; z-index: 2; height: auto; pointer-events: none; user-select: none; visibility: hidden; filter: drop-shadow(0 10px 16px rgb(0 0 0 / .24)); transition: translate 520ms var(--ease-smooth-out), clip-path 520ms var(--ease-smooth-out), visibility 0s linear 520ms; }
+/* Over the top edge: artwork 260×262, paws overlap the border by 8 px. */
+.dapti-pose[data-pose=top] { width: 100px; right: 64px; bottom: calc(100% - 8px); translate: 0 100%; clip-path: inset(-40% -40% calc(100% + 8px) -40%); }
+/* Out of the right edge: artwork 300×417, straight cut 9.4% from its left. */
+.dapti-pose[data-pose=right] { --cut: 9.4%; width: 102px; left: calc(100% - 9.6px); bottom: 14px; translate: -100% 0; clip-path: inset(-40% -40% -40% calc(100% + var(--cut))); }
+/* Waving from the right: artwork 340×420, straight cut 38.6% from its left (the waving hand reaches past it). */
+.dapti-pose[data-pose=wave] { --cut: 38.6%; width: 114px; left: calc(100% - 44px); top: 6px; translate: -100% 0; clip-path: inset(-40% -40% -40% calc(100% + var(--cut))); }
+/* Out of the left edge: artwork 300×438, straight cut 11.6% from its right. */
+.dapti-pose[data-pose=left] { --cut: 11.6%; width: 101px; right: calc(100% - 11.7px); bottom: 12px; translate: 100% 0; clip-path: inset(-40% calc(100% + var(--cut)) -40% -40%); }
+/* Shown: after the per-pose rules so it wins over their hidden state. */
+.dapti-pose.is-shown { visibility: visible; translate: 0 0; clip-path: inset(-40%); transition: translate 720ms var(--ease-smooth-out), clip-path 720ms var(--ease-smooth-out), visibility 0s; }
+.home-hero h1 { margin-bottom: 0; }
+
+.home-chips { justify-content: center; }
+.home-chips .ai-chip { color: var(--fg-2); }
+.home-chips .ai-chip:hover { color: var(--fg); }
+
+.tool-link { align-self: center; display: inline-flex; align-items: center; gap: var(--space-2); padding: 4px 10px 4px 6px; border-radius: var(--radius-control); color: var(--fg-3); font-size: var(--text-small); transition: color var(--dur-base), background-color var(--dur-base); }
+.tool-link:hover { color: var(--fg); background: var(--surface-2); }
+.tool-link > .icon { width: 12px; height: 12px; transition: translate var(--duration-fast) var(--ease-smooth-out); }
+.tool-link:hover > .icon { translate: 2px 0; }
+/* Integration chips: brand logos on a near-white disc (brand colors are drawn for white), cut out of the page with a
+   ring of the page color so the overlap reads cleanly in both themes; the stack fans out on hover. */
+.tool-stack { display: inline-flex; padding-left: 2px; }
+.tool-stack img { width: 24px; height: 24px; padding: 5px; margin-left: -7px; border-radius: 50%; background: #fbfbf8; box-shadow: 0 0 0 2px var(--page), 0 1px 3px rgb(0 0 0 / .18), inset 0 0 0 1px rgb(15 15 13 / .06); object-fit: contain; transition: margin var(--duration-fast) var(--ease-smooth-out), translate var(--duration-fast) var(--ease-smooth-out); }
+.tool-stack img:first-child { margin-left: 0; }
+.tool-link:hover .tool-stack img { margin-left: -3px; }
+.tool-link:hover .tool-stack img:first-child { margin-left: 0; }
+
+/* Thread: the greeting and quick starts step aside once the conversation begins. */
+.home-thread:empty { display: none; }
+.home-thread { display: grid; gap: var(--space-4); }
+.home-hero.is-chatting { justify-content: flex-end; }
+.home-hero.is-chatting :is(h1, .home-chips, .tool-link) { display: none; }
+.thread-msg { display: flex; gap: var(--space-3); min-width: 0; animation: thread-in var(--duration-fast) var(--ease-smooth-out) both; }
+.thread-msg.is-user { justify-content: flex-end; }
+.thread-msg.is-user p { max-width: 80%; margin: 0; padding: 10px var(--space-4); border-radius: 20px 20px 6px 20px; background: var(--surface-2); color: var(--fg); line-height: var(--line-body); overflow-wrap: anywhere; }
+/* Dapti's avatar: the thinking bust on a dark studio disc with a soft lime glow from the eyes; mirrored so Dapti
+   faces the message it is answering. Same in both themes. */
+.dapti-avatar { width: 36px; height: 36px; flex-shrink: 0; padding: 0; border-radius: 50%; object-fit: cover; object-position: 50% 30%; transform: scaleX(-1); background: radial-gradient(70% 70% at 50% 38%, rgb(228 242 34 / .18), transparent 70%), radial-gradient(120% 100% at 50% 0%, #2a2a27 0%, #0e0e0d 70%); box-shadow: 0 6px 16px -8px rgb(0 0 0 / .5); }
+.thread-name { display: block; font-size: var(--text-small); line-height: var(--line-small); font-weight: 600; color: var(--fg-2); }
+.thread-msg.is-ai > div { min-width: 0; flex: 1; }
+.thread-msg.is-ai p { margin: 2px 0 0; color: var(--fg); font-size: 15px; line-height: 24px; }
+@keyframes thread-in { from { opacity: 0; translate: 0 4px; } }
+
+/* Continue where you left off: a plain list, no panel. */
+.home-recent { width: 100%; max-width: var(--home-w); margin: 0 auto; }
+.home-recent h2, .academy h2 { margin: 0 0 var(--space-2); font-size: 14px; line-height: 20px; font-weight: 600; color: var(--fg-2); }
+.home-recent ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.home-recent li { border-bottom: 1px solid var(--line); }
+.home-recent a { display: flex; align-items: center; gap: var(--space-3); min-height: 56px; padding: var(--space-2); margin: 0 calc(-1 * var(--space-2)); border-radius: var(--radius-md); transition: background-color var(--dur-base); }
+.home-recent a:hover { background: var(--surface-2); }
+.home-recent-icon { width: 32px; height: 32px; display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: var(--surface-2); color: var(--fg-2); }
+.home-recent-icon svg { width: 15px; height: 15px; }
+.home-recent-text { display: grid; min-width: 0; flex: 1; }
+.home-recent-text b { font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.home-recent-text small { display: flex; align-items: center; gap: var(--space-tight); color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); }
+.home-recent-text .status { font-size: var(--text-small); }
+.home-recent time { color: var(--fg-3); font-size: var(--text-small); }
+
+/* ── Dapta Academy ───────────────────────────────────────────────────────── */
+.academy { width: 100%; }
+.academy .section-head { align-items: flex-end; flex-wrap: wrap; margin-bottom: var(--space-3); }
+.academy .section-head p { margin: 0; color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); }
+.academy-lang { width: 190px; }
+.academy-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.academy-all { display: inline-flex; align-items: center; gap: var(--space-tight); color: var(--fg-2); font-size: var(--text-small); font-weight: 500; }
+.academy-all:hover { color: var(--fg); }
+.academy-all .icon { width: 12px; height: 12px; }
+/* Selected filter: the notification tabs' selected state (surface-3 + hairline), not a second lime control. */
+.academy-filters .ai-chip { min-height: 30px; border-color: transparent; background: transparent; color: var(--fg-3); }
+.academy-filters .ai-chip:hover { background: var(--surface-2); color: var(--fg); }
+.academy-filters .ai-chip[aria-pressed=true] { background: var(--surface-3); border-color: var(--line-strong); color: var(--fg); font-weight: 500; }
+
+.academy-rail { position: relative; }
+.academy-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(232px, 1fr); gap: var(--space-3); margin: 0; padding: 2px 2px var(--space-2); list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.academy-row::-webkit-scrollbar { display: none; }
+.academy-row > li { scroll-snap-align: start; min-width: 0; }
+.academy-nav { position: absolute; top: 64px; z-index: 2; background: var(--raised); box-shadow: var(--shadow-menu); }
+.academy-nav[data-academy-scroll="-1"] { left: -14px; }
+.academy-nav[data-academy-scroll="1"] { right: -14px; }
+.academy-empty { padding: var(--space-8) var(--space-4); color: var(--fg-3); text-align: center; }
+
+.academy-card { display: flex; flex-direction: column; height: 100%; overflow: hidden; color: inherit; transition: transform var(--duration-fast) var(--ease-smooth-out), box-shadow var(--duration-fast) var(--ease-smooth-out); }
+.academy-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-menu); }
+.academy-card:active { transform: scale(var(--press-scale)); }
+.academy-thumb { position: relative; aspect-ratio: 16 / 9; display: flex; flex-direction: column; justify-content: flex-start; gap: var(--space-tight); padding: var(--space-3); overflow: hidden; color: #f2f1ec; background:
+  radial-gradient(110% 90% at 90% 110%, hsl(var(--hue) 40% 30% / .95), transparent 62%),
+  radial-gradient(70% 60% at 0% 0%, color-mix(in oklab, var(--accent-fill) 22%, transparent), transparent 70%),
+  #121211; }
+.academy-thumb-brand { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: rgb(242 241 236 / .75); }
+.academy-thumb-brand svg { width: 38px; height: 12px; fill: initial; stroke: none; color: #efefef; }
+.academy-thumb-title { max-width: 80%; margin: 0; font-family: var(--font-title); font-size: 17px; line-height: 1.12; font-weight: 600; letter-spacing: var(--title-tracking-tight); }
+.academy-thumb-title mark { padding: 0 .18em; border-radius: var(--radius-sm); color: var(--on-accent); background: var(--accent-fill); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.academy-duration { position: absolute; right: var(--space-2); bottom: var(--space-2); min-height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: var(--radius-control); font-family: var(--mono); font-size: 11px; color: #f2f1ec; background: rgb(0 0 0 / .62); }
+.academy-play { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / .28); opacity: 0; transition: opacity var(--duration-fast) var(--ease-smooth-out); }
+.academy-play span { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: var(--on-accent); background: linear-gradient(180deg, var(--glow-accent-from) 0%, var(--glow-accent-to) 100%); scale: .9; transition: scale var(--duration-fast) var(--ease-smooth-out); }
+.academy-play svg { width: 16px; height: 16px; fill: currentColor; margin-left: 2px; }
+.academy-card:hover .academy-play, .academy-card:focus-visible .academy-play { opacity: 1; }
+.academy-card:hover .academy-play span { scale: 1; }
+.academy-body { display: grid; gap: 4px; padding: var(--space-3) var(--space-4) var(--space-4); }
+.academy-body small { color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); }
+.academy-body b { font-weight: 500; line-height: var(--line-body); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+@media (max-width: 767px) {
+  .page-content.home { gap: var(--space-10); }
+  .home-hero { min-height: calc(100dvh - 52px - 120px); padding-top: var(--space-4); }
+  .composer-xl { padding: var(--space-4) var(--space-3) var(--space-2) var(--space-4); }
+  .composer-hint { display: none; }
+  .composer-bar .ai-send { margin-left: auto; }
+  .composer-xl .ai-send { width: 36px; height: 36px; }
+  .composer-stage { margin-top: 80px; }
+  .dapti-pose[data-pose=top] { width: 84px; right: 28px; }
+  .home-chips { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; margin-inline: calc(-1 * var(--page-px)); padding-inline: var(--page-px); scrollbar-width: none; }
+  .home-chips .ai-chip { flex-shrink: 0; }
+  .home-recent time { display: none; }
+  .academy-lang { width: 100%; }
+  .academy-row { grid-auto-columns: 78%; }
+  .academy-nav { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academy-card, .academy-play, .academy-play span, .thread-msg, .dapti-pose, .tool-stack img { transition: none !important; animation: none !important; }
+  .academy-card:hover { transform: none; }
+}

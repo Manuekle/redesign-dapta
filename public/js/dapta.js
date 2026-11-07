@@ -85,7 +85,7 @@
       sync();
       hero?.classList.add('is-chatting');
       add('user', `<p>${escapeHtml(text)}</p>`);
-      const answer = add('ai', `<img class="dapti-avatar" src="/img/dapti-avatar.webp" alt="" width="32" height="32"><div><b class="thread-name">Dapti</b><div data-slot></div></div>`);
+      const answer = add('ai', `<div><b class="thread-name">Dapti</b><div data-slot></div></div>`);
       const slot = answer.querySelector('[data-slot]');
       window.sound?.play('loading', { emphasis: 'subtle' });
       const stop = thinking(slot, 'Pensando');
@@ -99,6 +99,68 @@
     });
     sync();
   }
+
+  // ── Credits meter ───────────────────────────────────────────────────────
+  // data-used / data-total (the server would print them) drive the count, the bar width and the state: ok, low from
+  // 80 % used, out at 100 %. Out of credits, the note says so, as the old Pro card did.
+  document.querySelectorAll('.plan-meter').forEach(meter => {
+    const used = Math.max(0, Number(meter.dataset.used) || 0);
+    const total = Math.max(1, Number(meter.dataset.total) || 1);
+    const ratio = used / total;
+    const left = Math.max(0, total - used);
+    meter.dataset.level = ratio >= 1 ? 'out' : ratio >= 0.8 ? 'low' : 'ok';
+    meter.querySelector('[data-credits-used]').textContent = used;
+    meter.querySelector('[data-credits-total]').textContent = total;
+    meter.querySelector('[data-credits-note]').textContent = ratio >= 1 ? 'Sin créditos' : `${left} disponibles`;
+    const bar = meter.querySelector('.plan-meter-bar');
+    bar.setAttribute('aria-valuemax', total);
+    bar.setAttribute('aria-valuenow', Math.min(used, total));
+    bar.querySelector('i').style.setProperty('--used', `${Math.min(ratio, 1) * 100}%`);
+  });
+
+  // ── Conecta tu IA: Claude → OpenAI → Cursor ──────────────────────────────
+  // transitions.dev's icon swap is pure CSS; this only moves data-state along. It waits while the tab is hidden so
+  // the logos don't spin through unseen turns.
+  document.querySelectorAll('.ai-swap').forEach(swap => {
+    const order = [...swap.querySelectorAll('.t-icon')].map(icon => icon.dataset.icon);
+    let index = Math.max(0, order.indexOf(swap.dataset.state));
+    setInterval(() => {
+      if (document.hidden) return;
+      index = (index + 1) % order.length;
+      swap.dataset.state = order[index];
+    }, 2600);
+  });
+
+  // ── Integration logos: transitions.dev "Avatar group hover" ─────────────
+  // Distance-falloff lift with direction-aware easing. The timing function is set inline BEFORE the variable writes,
+  // so the lift uses the clean ease-in and the return (mouseleave) gets the bouncy spring.
+  document.querySelectorAll('.t-avatar-group').forEach(group => {
+    const avatars = [...group.querySelectorAll('.t-avatar')];
+    const cs = getComputedStyle(root);
+    const num = (name, fb) => { const v = parseFloat(cs.getPropertyValue(name)); return Number.isFinite(v) ? v : fb; };
+    const ease = (name, fb) => cs.getPropertyValue(name).trim() || fb;
+    const setShifts = (activeIdx, phase) => {
+      const lift = num('--avatar-lift', -4);
+      const falloff = num('--avatar-falloff', 0.45);
+      const scale = num('--avatar-scale', 1.05);
+      const tf = phase === 'out'
+        ? ease('--avatar-ease-out', 'cubic-bezier(0.34, 3.85, 0.64, 1)')
+        : ease('--avatar-ease-in', 'cubic-bezier(0.22, 1, 0.36, 1)');
+      avatars.forEach((el, i) => {
+        el.style.transitionTimingFunction = tf;
+        if (activeIdx == null) {
+          el.style.setProperty('--shift', '0px');
+          el.style.setProperty('--scale-active', '1');
+          return;
+        }
+        const d = Math.abs(i - activeIdx);
+        el.style.setProperty('--shift', (lift * Math.pow(falloff, d)).toFixed(3) + 'px');
+        el.style.setProperty('--scale-active', i === activeIdx ? String(scale) : '1');
+      });
+    };
+    avatars.forEach((el, i) => el.addEventListener('mouseenter', () => setShifts(i, 'in')));
+    group.addEventListener('mouseleave', () => setShifts(null, 'out'));
+  });
 
   // ── Dapti around the chat ──────────────────────────────────────────────
   // One pose per hour: the hour of the day picks it from the poses that fit (side poses need room between the

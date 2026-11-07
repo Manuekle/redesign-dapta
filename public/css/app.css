@@ -337,7 +337,11 @@ svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width:
 .main-area > .topbar { flex-shrink: 0; }
 .main-scroll { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth; scrollbar-gutter: stable; }
 :root { --sidebar-w: 264px; --sidebar-w-collapsed: 72px; }
-.sidebar { width: var(--sidebar-w); border-right: 1px solid var(--line); padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow-y: auto; overscroll-behavior: contain; z-index: 50; background: var(--surface); }
+.sidebar { width: var(--sidebar-w); border-right: 1px solid var(--line); padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior: contain; z-index: 50; background: var(--surface); }
+/* Only the platform links scroll, and only when a group opens; everything below them stays put. */
+.sidebar > :not(.sidebar-scroll) { flex-shrink: 0; }
+.sidebar-scroll { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.sidebar-scroll::-webkit-scrollbar { width: 0; height: 0; }
 .workspace-name { display: flex; flex-direction: column; justify-content: center; gap: 0; min-height: 40px; padding: 0 var(--space-1); font-size: 16px; line-height: 22px; font-weight: 600; letter-spacing: var(--title-tracking); }
 .workspace-name small { color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); font-weight: 400; letter-spacing: 0; }
 .nav-caption { padding: 0 14px; margin-bottom: var(--space-2); color: var(--fg-3); font-size: var(--text-small); }
@@ -1726,11 +1730,11 @@ kbd { display: inline-grid; place-items: center; min-width: 20px; height: 20px; 
   :root.sidebar-collapsed .sidebar-head .workspace-name { flex: none; padding: 0; }
   :root.sidebar-collapsed .sidebar-collapse svg { rotate: 180deg; }
   :root.sidebar-collapsed .sidebar :is(.brand-text, .nav-counter, .nav-chevron, .account-text, .account-trigger > svg) { display: none; }
-  :root.sidebar-collapsed .sidebar > .nav-links .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  :root.sidebar-collapsed .sidebar > .nav-caption { height: 1px; margin: var(--space-4) var(--space-2); padding: 0; overflow: hidden; font-size: 0; background: var(--line); }
+  :root.sidebar-collapsed .sidebar .nav-links .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  :root.sidebar-collapsed .sidebar .nav-caption { height: 1px; margin: var(--space-4) var(--space-2); padding: 0; overflow: hidden; font-size: 0; background: var(--line); }
   :root.sidebar-collapsed .sidebar-head + .nav-caption { display: none; }
-  :root.sidebar-collapsed .sidebar > .nav-links .nav-link { justify-content: center; padding-inline: 0; }
-  :root.sidebar-collapsed .sidebar > .nav-links .nav-alert { position: absolute; top: 8px; right: 12px; }
+  :root.sidebar-collapsed .sidebar .nav-links .nav-link { justify-content: center; padding-inline: 0; }
+  :root.sidebar-collapsed .sidebar .nav-links .nav-alert { position: absolute; top: 8px; right: 12px; }
   :root.sidebar-collapsed .nav-group .nav-sub { display: none; }
   :root.sidebar-collapsed .account-trigger { justify-content: center; padding: 3px; }
   :root.sidebar-collapsed .account-panel { right: auto; width: 248px; }

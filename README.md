@@ -9,6 +9,12 @@ npm run dev      # http://localhost:5180
 npm run build    # dist/
 ```
 
+### Vercel
+
+Importa el repositorio en Vercel y despliega sin tocar nada: `vercel.json` fija Vite, `npm run build` y `dist/`.
+Las dos rutas que en local sirve el middleware de `vite.config.js` (`GET /buscar` de la paleta ⌘K y
+`POST /notificaciones/leer`) se reescriben a las funciones de `api/`, que usan los mismos datos de `mock/records.js`.
+
 ## Qué viene de blindem y qué es nuevo
 
 | Archivo | Origen |
@@ -35,8 +41,10 @@ La home es minimalista: el chat con Dapti es la pieza principal y lo demás qued
 | Buscar o ir a… (⌘K) | blindem `dialog.command` + `command.js` (`GET /buscar`, simulado en `vite.config.js`); «Preguntar» envía a Dapti |
 | Notificaciones | blindem `.notif-panel` + `nav.js` (`public/data/notifications.json`) |
 | «Hola Manuel, ¿cómo te ayudo?» + chat | `.home-hero` + `.composer-xl` (campo de blindem a tamaño grande), `.ai-chip`, `.ai-send`; el hilo usa `thinking()` y `stream()` de `ai.js` |
-| Dapti alrededor del chat | 4 poses (`public/img/dapti-peek-*.webp`, `dapti-wave-right.webp`): arriba, derecha, izquierda y saludando. Salen desde detrás del chat (clip-path sincronizado con el desplazamiento) y cambian una vez por hora; las laterales solo si hay espacio |
-| Dapti en las respuestas | avatar `public/img/dapti-avatar.webp` (pose pensando, en espejo para mirar al mensaje) |
-| Conecta tus herramientas | logos de svgl.app sobre discos blancos |
+| Dapti alrededor del chat | 4 poses (`public/img/dapti-peek-*.webp`, `dapti-wave-right.webp`): arriba, derecha, izquierda y saludando. Salen desde detrás del chat (se deslizan bajo el compositor y solo pasan delante al llegar, para que las patas agarren el borde) y cambian una vez por hora; las laterales solo si hay espacio |
+| Créditos usados | `.plan-meter` (dapta.css/dapta.js): ficha con icono de monedas, barra con brillo y «Mejorar plan»; `data-used`/`data-total` deciden el estado (lima, ámbar desde 80 %, rojo al agotarse) |
+| Conecta tu IA | `.connect-ai`: logos de Claude, OpenAI y Cursor (svgl.app, en línea) que se turnan con el «Icon swap» de transitions.dev (`.ai-swap`) |
+| Dapti en las respuestas | solo su nombre sobre el texto, sin imagen |
+| Conecta tus herramientas | logos de svgl.app en discos blancos juntos, solapados como un grupo de avatares, con «Avatar group hover» de transitions.dev (`.t-avatar`, `dapta.js`) |
 | Continúa donde lo dejaste | lista simple `.home-recent` con `.status` de blindem |
 | Dapta Academy | `.section-head`, `.segmented`, `.ai-chip`, tarjetas `.surface` |

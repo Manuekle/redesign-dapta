@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/buscar", "destination": "/api/buscar" },
+    { "source": "/notificaciones/leer", "destination": "/api/notificaciones/leer" }
+  ]
+}

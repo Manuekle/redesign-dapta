@@ -17,13 +17,49 @@
 .nav-pill.is-new { color: var(--fg-2); background: var(--surface-3); }
 .nav-link:has(.nav-pill) .nav-counter { margin-left: 0; }
 
-.plan-meter { display: grid; gap: var(--space-tight); margin: 0 0 var(--space-3); padding: var(--space-3) 14px; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--raised); box-shadow: var(--shadow-card); }
-.plan-meter-head { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--fg-3); font-size: var(--text-small); line-height: var(--line-small); }
-.plan-meter-head b { color: var(--fg); font-weight: 500; }
-.plan-meter .dash-split { height: 6px; }
+/* Credits meter: a small card with a lime coin chip, the count in mono, a glowing bar and a way up. The state comes
+   from dapta.js (data-level): ok = lime, low (80%+) = amber, out (100%) = red, like the bar and the call to action. */
+.plan-meter { --meter: var(--accent-fill); --meter-glow: rgb(228 242 34 / .45); --meter-tint: var(--accent-wash); --meter-ink: var(--accent-line); position: relative; display: grid; gap: 10px; margin: 0 0 var(--space-3); padding: 12px 14px 10px; border: 1px solid var(--line); border-radius: var(--radius-panel); background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--meter) 10%, transparent), transparent 60%), var(--raised); box-shadow: var(--shadow-card), inset 0 1px 0 rgb(255 255 255 / .04); overflow: hidden; }
+.plan-meter[data-level=low] { --meter: var(--warn); --meter-glow: color-mix(in srgb, var(--warn) 45%, transparent); --meter-tint: var(--warn-tint); --meter-ink: var(--warn-text); }
+.plan-meter[data-level=out] { --meter: var(--danger); --meter-glow: color-mix(in srgb, var(--danger) 45%, transparent); --meter-tint: var(--danger-tint); --meter-ink: var(--danger-text); }
+.plan-meter-head { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.plan-meter-icon { width: 28px; height: 28px; display: grid; place-items: center; flex-shrink: 0; border-radius: 9px; background: var(--meter-tint); color: var(--meter-ink); }
+/* Duotone like the nav icons (app.css .nav-link svg): stroke in the color, the shapes filled at 18 %. */
+.plan-meter-icon svg { width: 16px; height: 16px; fill: currentColor; fill-opacity: .18; }
+.plan-meter-title { flex: 1; min-width: 0; color: var(--fg-2); font-size: var(--text-small); line-height: var(--line-small); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.plan-meter-count { color: var(--fg); font-weight: 600; font-size: 13px; white-space: nowrap; }
+.plan-meter-total { color: var(--fg-3); font-weight: 400; }
+/* The bar: a recessed track and a fill that glows in the state color. At 0 the fill is a single dot so the bar never
+   looks broken. */
+.plan-meter-bar { position: relative; height: 6px; border-radius: 999px; background: var(--surface-3); box-shadow: inset 0 1px 2px rgb(0 0 0 / .25), inset 0 0 0 1px var(--line); }
+.plan-meter-bar i { position: absolute; inset: 0 auto 0 0; width: max(6px, var(--used, 0%)); border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--meter) 70%, transparent), var(--meter)); box-shadow: 0 0 10px var(--meter-glow); transition: width var(--duration-slow, 400ms) var(--ease-smooth-out), background-color var(--duration-fast) var(--ease-smooth-out); }
+.plan-meter-foot { display: flex; white-space: nowrap; align-items: center; justify-content: space-between; gap: var(--space-2); color: var(--fg-3); font-size: 12px; line-height: 16px; }
+.plan-meter-cta { display: inline-flex; align-items: center; gap: 4px; margin-right: -4px; padding: 2px 4px; border-radius: 6px; color: var(--fg-2); font-weight: 500; transition: color var(--dur-base), background-color var(--dur-base); }
+.plan-meter-cta svg { width: 12px; height: 12px; transition: translate var(--duration-fast) var(--ease-smooth-out); }
+.plan-meter-cta:hover { color: var(--fg); background: var(--surface-2); }
+.plan-meter-cta:hover svg { translate: 2px 0; }
+.plan-meter[data-level=out] .plan-meter-cta { color: var(--danger-text); }
+
+/* Conecta tu IA: a raised row like the reference card, with the AI logos taking turns in the icon slot and an arrow
+   that nudges on hover. */
+.nav-link.connect-ai { margin-top: var(--space-2); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); color: var(--fg); font-weight: 500; }
+.nav-link.connect-ai:hover { background: var(--surface-3); }
+.connect-ai .nav-label { flex: 1; }
+.nav-link.connect-ai .connect-ai-arrow { width: 16px; height: 16px; fill: none; color: var(--fg-3); transition: translate var(--duration-fast) var(--ease-smooth-out), color var(--dur-base); }
+.connect-ai:hover .connect-ai-arrow { translate: 2px 0; color: var(--fg); }
+/* The logo slot: transitions.dev's icon swap (app.css) for three icons instead of two. Brand logos are filled shapes,
+   not strokes; Claude keeps its orange, OpenAI and Cursor follow the text color so they read in both themes. */
+.ai-swap { width: 18px; height: 18px; flex-shrink: 0; }
+.ai-swap .t-icon { display: grid; place-items: center; opacity: 0; filter: blur(var(--icon-swap-blur)); transform: scale(var(--icon-swap-start-scale)); }
+.ai-swap[data-state=claude] .t-icon[data-icon=claude],
+.ai-swap[data-state=openai] .t-icon[data-icon=openai],
+.ai-swap[data-state=cursor] .t-icon[data-icon=cursor] { opacity: 1; filter: blur(0); transform: scale(1); }
+.nav-link .ai-swap svg { width: 18px; height: 18px; fill: currentColor; fill-opacity: 1; stroke: none; }
+.ai-swap [data-icon=claude] { color: #d97757; }
+.ai-swap [data-icon=cursor] svg { width: 16px; height: 16px; }
 
 @media (min-width: 1024px) {
-  :root.sidebar-collapsed .sidebar :is(.workspace-switch, .nav-pill, .plan-meter, .dapta-wordmark) { display: none; }
+  :root.sidebar-collapsed .sidebar :is(.workspace-switch, .nav-pill, .plan-meter, .dapta-wordmark, .connect-ai-arrow) { display: none; }
   :root.sidebar-collapsed .dapta-iso { display: block; }
 }
 
@@ -57,27 +93,31 @@
 
 .guided-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 /* Dapti around the chat. Four poses take turns (dapta.js, one per hour): over the top edge with both paws on it, out
-   of the right edge, out of the left edge, and waving from the right. Each artwork is cut straight where the chat
-   hides it; that cut is lined up with the composer's edge.
-   Sizes are set so the head reads the same (~100 px) in every pose.
-   Coming out from behind the chat: Dapti slides out from the edge while a clip-path hides whatever is still on the
-   chat's side of that edge. Both move with the same duration and curve, so the clip line stays glued to the edge
-   (it starts exactly on it and opens past it as Dapti finishes, revealing the paws/hand that grip the border).
-   Dapti then rests in front of the composer, inside the stage's own stacking context (isolation), so it never rises
-   over the top bar, menus or dialogs; the model menu's list is mounted in <body> and always opens above it. */
+   of the right edge, out of the left edge, and peeking from the top-right corner. Each artwork is cut straight where
+   the chat hides it; that cut is lined up with the composer's edge. Sizes are set so the head reads the same
+   (~100 px) in every pose.
+   Coming out from behind the chat: while hidden and while sliding, Dapti sits BEHIND the composer (z-index 0 under
+   the composer's 1), so the opaque composer itself hides whatever has not crossed the edge yet: no clip-path to
+   keep in sync, nothing can ever show in front. Every hidden position lies fully inside the composer box. Once it
+   has arrived, Dapti steps in front (z-index 2) so the paws/hand that grip the border overlap it. Going back it drops behind the composer first, then slides in.
+   All of this lives in the stage's own stacking context (isolation), so Dapti never rises over the top bar, menus
+   or dialogs; the model menu's list is mounted in <body> and always opens above it. */
 .composer-stage { position: relative; isolation: isolate; margin-top: 96px; }
 .composer-stage .composer { position: relative; z-index: 1; }
-.dapti-pose { --cut: 0%; position: absolute; z-index: 2; height: auto; pointer-events: none; user-select: none; visibility: hidden; filter: drop-shadow(0 10px 16px rgb(0 0 0 / .24)); transition: translate 520ms var(--ease-smooth-out), clip-path 520ms var(--ease-smooth-out), visibility 0s linear 520ms; }
-/* Over the top edge: artwork 260×262, paws overlap the border by 8 px. */
-.dapti-pose[data-pose=top] { width: 100px; right: 64px; bottom: calc(100% - 8px); translate: 0 100%; clip-path: inset(-40% -40% calc(100% + 8px) -40%); }
+.dapti-pose { position: absolute; z-index: 0; height: auto; pointer-events: none; user-select: none; visibility: hidden; filter: drop-shadow(0 10px 16px rgb(0 0 0 / .24)); transition: translate 520ms var(--ease-smooth-out), z-index 0s, visibility 0s linear 520ms; }
+/* Over the top edge: artwork 260×262, paws overlap the border by 8 px. Hidden: pushed down its own height, under the
+   composer. */
+.dapti-pose[data-pose=top] { width: 100px; right: 64px; bottom: calc(100% - 8px); translate: 0 100%; }
 /* Out of the right edge: artwork 300×417, straight cut 9.4% from its left. */
-.dapti-pose[data-pose=right] { --cut: 9.4%; width: 102px; left: calc(100% - 9.6px); bottom: 14px; translate: -100% 0; clip-path: inset(-40% -40% -40% calc(100% + var(--cut))); }
-/* Waving from the right: artwork 340×420, straight cut 38.6% from its left (the waving hand reaches past it). */
-.dapti-pose[data-pose=wave] { --cut: 38.6%; width: 114px; left: calc(100% - 44px); top: 6px; translate: -100% 0; clip-path: inset(-40% -40% -40% calc(100% + var(--cut))); }
+.dapti-pose[data-pose=right] { width: 102px; left: calc(100% - 9.6px); bottom: 14px; translate: -100% 0; }
+/* From the top-right corner: artwork 340×420, straight cut 38.6% from its left (the paw on the top edge reaches
+   past it). */
+.dapti-pose[data-pose=wave] { width: 114px; left: calc(100% - 44px); top: 6px; translate: -100% 0; }
 /* Out of the left edge: artwork 300×438, straight cut 11.6% from its right. */
-.dapti-pose[data-pose=left] { --cut: 11.6%; width: 101px; right: calc(100% - 11.7px); bottom: 12px; translate: 100% 0; clip-path: inset(-40% calc(100% + var(--cut)) -40% -40%); }
-/* Shown: after the per-pose rules so it wins over their hidden state. */
-.dapti-pose.is-shown { visibility: visible; translate: 0 0; clip-path: inset(-40%); transition: translate 720ms var(--ease-smooth-out), clip-path 720ms var(--ease-smooth-out), visibility 0s; }
+.dapti-pose[data-pose=left] { width: 101px; right: calc(100% - 11.7px); bottom: 12px; translate: 100% 0; }
+/* Shown: after the per-pose rules so it wins over their hidden state. z-index flips to the front only when the slide
+   has finished. */
+.dapti-pose.is-shown { visibility: visible; translate: 0 0; z-index: 2; transition: translate 720ms var(--ease-smooth-out), z-index 0s linear 720ms, visibility 0s; }
 .home-hero h1 { margin-bottom: 0; }
 
 .home-chips { justify-content: center; }
@@ -88,13 +128,41 @@
 .tool-link:hover { color: var(--fg); background: var(--surface-2); }
 .tool-link > .icon { width: 12px; height: 12px; transition: translate var(--duration-fast) var(--ease-smooth-out); }
 .tool-link:hover > .icon { translate: 2px 0; }
-/* Integration chips: brand logos on a near-white disc (brand colors are drawn for white), cut out of the page with a
-   ring of the page color so the overlap reads cleanly in both themes; the stack fans out on hover. */
+/* Integration chips: packed together like an avatar group. Each .t-avatar is a near-white disc (brand colors are
+   drawn for white) that overlaps the previous one and is cut out of it with a thin ring of the page color. Only the
+   disc is round: the logo inside is never clipped or rounded, and it sits clear of the strip the next disc covers
+   (4 px overlap + 2 px ring < 6 px margin around the logo).
+   Hovering one runs transitions.dev's "Avatar group hover" (dapta.js): the disc lifts and grows while keeping its
+   place in the stack (no z-index change: the next disc still overlaps it), its neighbours lift less the farther they are, and the row springs back on leave. */
 .tool-stack { display: inline-flex; padding-left: 2px; }
-.tool-stack img { width: 24px; height: 24px; padding: 5px; margin-left: -7px; border-radius: 50%; background: #fbfbf8; box-shadow: 0 0 0 2px var(--page), 0 1px 3px rgb(0 0 0 / .18), inset 0 0 0 1px rgb(15 15 13 / .06); object-fit: contain; transition: margin var(--duration-fast) var(--ease-smooth-out), translate var(--duration-fast) var(--ease-smooth-out); }
-.tool-stack img:first-child { margin-left: 0; }
-.tool-link:hover .tool-stack img { margin-left: -3px; }
-.tool-link:hover .tool-stack img:first-child { margin-left: 0; }
+.tool-stack .t-avatar { position: relative; display: grid; place-items: center; width: 28px; height: 28px; margin-left: -4px; border-radius: 50%; background: #fbfbf8; box-shadow: 0 0 0 2px var(--page); }
+.tool-stack .t-avatar:first-child { margin-left: 0; }
+.tool-stack img { display: block; width: 16px; height: 16px; border-radius: 0; object-fit: contain; }
+
+/* transitions.dev · Avatar group hover */
+:root {
+  --avatar-lift: -4px;
+  --avatar-dur: 320ms;
+  --avatar-scale: 1.05;
+  --avatar-falloff: 0.45;
+  --avatar-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
+  --avatar-ease-out: cubic-bezier(0.34, 3.85, 0.64, 1);
+}
+/* Hover-spring transition only — bring your own avatar/chip
+   styling (size, shape, border, stacking, background). */
+.t-avatar {
+  transform-origin: center;
+  /* translateY before scale so scale doesn't amplify the lift offset. */
+  transform:
+    translateY(var(--shift, 0px))
+    scale(var(--scale-active, 1));
+  transition: transform var(--avatar-dur) var(--avatar-ease-in);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-avatar { transition: none !important; transform: none !important; }
+}
 
 /* Thread: the greeting and quick starts step aside once the conversation begins. */
 .home-thread:empty { display: none; }
@@ -104,11 +172,9 @@
 .thread-msg { display: flex; gap: var(--space-3); min-width: 0; animation: thread-in var(--duration-fast) var(--ease-smooth-out) both; }
 .thread-msg.is-user { justify-content: flex-end; }
 .thread-msg.is-user p { max-width: 80%; margin: 0; padding: 10px var(--space-4); border-radius: 20px 20px 6px 20px; background: var(--surface-2); color: var(--fg); line-height: var(--line-body); overflow-wrap: anywhere; }
-/* Dapti's avatar: the thinking bust on a dark studio disc with a soft lime glow from the eyes; mirrored so Dapti
-   faces the message it is answering. Same in both themes. */
-.dapti-avatar { width: 36px; height: 36px; flex-shrink: 0; padding: 0; border-radius: 50%; object-fit: cover; object-position: 50% 30%; transform: scaleX(-1); background: radial-gradient(70% 70% at 50% 38%, rgb(228 242 34 / .18), transparent 70%), radial-gradient(120% 100% at 50% 0%, #2a2a27 0%, #0e0e0d 70%); box-shadow: 0 6px 16px -8px rgb(0 0 0 / .5); }
 .thread-name { display: block; font-size: var(--text-small); line-height: var(--line-small); font-weight: 600; color: var(--fg-2); }
 .thread-msg.is-ai > div { min-width: 0; flex: 1; }
+.thread-msg.is-ai { padding-left: 2px; }
 .thread-msg.is-ai p { margin: 2px 0 0; color: var(--fg); font-size: 15px; line-height: 24px; }
 @keyframes thread-in { from { opacity: 0; translate: 0 4px; } }
 
@@ -189,6 +255,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .academy-card, .academy-play, .academy-play span, .thread-msg, .dapti-pose, .tool-stack img { transition: none !important; animation: none !important; }
+  .academy-card, .academy-play, .academy-play span, .thread-msg, .dapti-pose { transition: none !important; animation: none !important; }
   .academy-card:hover { transform: none; }
 }
